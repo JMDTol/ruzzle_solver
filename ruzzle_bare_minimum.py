@@ -159,12 +159,13 @@ def get_prefixes():
 
 
 def word_mults_to_int_array():
-    int_word_mults = []
+    """ Converts word_mults to an array of integers representing the word score multiplies. """
+    int_word_mults = [[1] * 4 for _ in range(4)]
     for i in range(4):
-        int_word_mults.append([None] * 4)
         for j in range(4):
             int_word_mults[i][j] = int(word_mults[i][j]) if word_mults[i][j] in '23' else 1
     return int_word_mults
+
 
 
 if __name__ == '__main__':
