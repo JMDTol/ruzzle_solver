@@ -69,7 +69,7 @@ def dfs(graph, visited, s, word, word_pts, word_mult, path):
         if len_word <= 6 and word not in prefixes[len_word - 2]:
             return
 
-        if word.lower() in dictionary:
+        if word in dictionary:
             score = word_pts * word_mult
             bonus = 0 if len_word < 4 else 5 * (len_word - 4)  # length bonus
             words_info.append((word, score + bonus, path[:]))  # append copy of path
@@ -110,14 +110,14 @@ def all_combos(board, points, word_int_mults):
 
 def get_dict():
     """returns set of words in dictionary (checking to see if a word is in a set is faster than a list)"""
-    dict_file = main_dir / 'TWL06.txt'
+    dict_file = main_dir / 'TWL06Upper.txt'
     return set(open(dict_file).read().splitlines())
 
 
 def check_words(words_info, remove_bases=False):
     """returns actual words and points and removes base words if True (removes 'sleep' if 'sleeping' is a word)"""
     # Keep actual words and sort by score (to keep the best words).
-    words_info = [word for word in words_info if word[0].lower() in dictionary]
+    words_info = [word for word in words_info if word[0] in dictionary]
     words_info.sort(key=lambda x: x[1])
 
     # remove 'walk' if 'walks' is a word
