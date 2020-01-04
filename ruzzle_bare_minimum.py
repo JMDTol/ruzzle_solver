@@ -66,7 +66,7 @@ def dfs(graph, visited, s, word, word_pts, word_mult, path):
     # store all >2 letter possible words in words_info if they are actual words
     if len_word >= 2:
         # ex) if a word begins with TTH, this doesn't exist so we can stop adding letters
-        if len_word <= 6 and word not in prefixes[len_word - 2]:
+        if len_word <= 9 and word not in prefixes[len_word - 2]:
             return
 
         if word in dictionary:
@@ -110,7 +110,7 @@ def all_combos(board, points, word_int_mults):
 
 def get_dict():
     """returns set of words in dictionary (checking to see if a word is in a set is faster than a list)"""
-    dict_file = main_dir / 'TWL06Upper.txt'
+    dict_file = main_dir / 'TWL06Trimmed.txt'
     return set(open(dict_file).read().splitlines())
 
 
@@ -153,7 +153,7 @@ def get_letter_pts(l):
 def get_prefixes():
     """returns a list of lists of prefixes of a certain number of letters"""
     prefixes = []
-    for i in range(2, 7):
+    for i in range(2, 9):
         with open(main_dir / f'prefixes{i}L.txt') as file:
             prefixes.append(set(file.read().splitlines()))
     return prefixes
