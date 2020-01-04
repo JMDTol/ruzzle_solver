@@ -63,19 +63,20 @@ def dfs(graph, visited, s, word, word_pts, word_mult, path):
     global words_info, points, word_int_mults
     len_word = len(word)
 
-    if 2 <= len_word <= 6:  # ex) if a word begins with TTH, this doesn't exist so we can stop adding letters
-        if word not in prefixes[len_word - 2]:
+    # store all >2 letter possible words in words_info if they are actual words
+    if len_word >= 2:
+        # ex) if a word begins with TTH, this doesn't exist so we can stop adding letters
+        if len_word <= 6 and word not in prefixes[len_word - 2]:
             return
 
-    # store all >2 letter possible words in words_info if they are actual words
-    if len_word >= 2 and word.lower() in dictionary:
-        score = word_pts * word_mult
-        bonus = 0 if len_word < 4 else 5 * (len_word - 4)  # length bonus
-        words_info.append((word, score + bonus, path[:]))  # append copy of path
+        if word.lower() in dictionary:
+            score = word_pts * word_mult
+            bonus = 0 if len_word < 4 else 5 * (len_word - 4)  # length bonus
+            words_info.append((word, score + bonus, path[:]))  # append copy of path
 
-    # there are no words greater than 12 letters (based on ruzzle database), so stop searching
-    if len_word == 12:
-        return
+        # there are no words greater than 12 letters (based on ruzzle database), so stop searching
+        if len_word == 12:
+            return
 
     visited[s] = True  # begin DFS, make sure no overlaps
     path.append(None)
