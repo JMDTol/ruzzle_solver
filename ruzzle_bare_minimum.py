@@ -1,10 +1,10 @@
 """
 A bare minimum ruzzle solver that takes a board as input and finds all words.
 
-This program requires a file called board.txt in the same directory as the program, and board.txt will 
+This program requires a file called board.txt in the same directory as the program, and board.txt will
 contain the letters in the board and information about multipliers (optional). It will write all words
 sorted by score into a file called words.txt. The 5 prefix files (prefixes2L.txt -> prefixes6L.txt)
-are required, as well as the dictionary (TWL06.txt). At the bottom of this file, set main_dir to the path to the 
+are required, as well as the dictionary (TWL06.txt). At the bottom of this file, set main_dir to the path to the
 directory with all the files. Type the board into board.txt, copying the format of the attached example board.
 The first 4 lines of board.txt should contain the letters of the board, all caps and separated by spaces.
 Line 5 is blank, and lines 6-9 contain information about multipliers. 2, 3, D, T, and - are DW, TW, DL, TL, and nothing
@@ -66,7 +66,7 @@ def dfs(graph, visited, s, word, word_pts, word_mult, path):
     # store all >2 letter possible words in words_info if they are actual words
     if len_word >= 2:
         # ex) if a word begins with TTH, this doesn't exist so we can stop adding letters
-        if len_word <= 9 and word not in prefixes[len_word - 2]:
+        if len_word <= 8 and word not in prefixes[len_word - 2]:
             return
 
         if word in dictionary:
@@ -168,14 +168,13 @@ def word_mults_to_int_array():
     return int_word_mults
 
 
-
 if __name__ == '__main__':
     # configs
     print_info = True  # if True, outputs information about board: number of words and total score
 
-    # directory with all necessary files 
+    # directory with all necessary files
     main_dir = Path('./')
-    
+
     # Reading data
     dictionary = get_dict()
     prefixes = get_prefixes()
@@ -187,6 +186,6 @@ if __name__ == '__main__':
     words_info = []
     all_combos(board, points, word_int_mults)
     words_info = check_words(words_info)
-    
+
     # Writing results to file
     write_words_to_file(words_info, print_info=print_info)
