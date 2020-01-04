@@ -115,7 +115,7 @@ def get_dict():
 
 def check_words(words_info, remove_bases=False):
     """returns actual words and points and removes base words if True (removes 'sleep' if 'sleeping' is a word)"""
-    # Keep actual words and sort by score
+    # Keep actual words and sort by score (to keep the best words).
     words_info = [word for word in words_info if word[0].lower() in dictionary]
     words_info.sort(key=lambda x: x[1])
 
