@@ -159,7 +159,7 @@ def get_prefixes():
 
 
 def word_mults_to_int_array():
-    """ Converts word_mults to an array of integers representing the word score multiplies. """
+    """ Converts word_mults to an array of integers representing the word score multipliers. """
     int_word_mults = [[1] * 4 for _ in range(4)]
     for i in range(4):
         for j in range(4):
