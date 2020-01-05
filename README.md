@@ -7,5 +7,5 @@ If you want the simplest version of this program, in which a 16 letter board is 
 Here's an image of the code in action: the board is in the top right and the words are outputted in words.txt.
 ![ruzzle_bare_minimum](https://user-images.githubusercontent.com/37674516/71758015-d26c2280-2e68-11ea-8e26-b5fd14355c71.png)
 ## CONTRIBUTORS
-dchen327
+dchen327  
 philippeitis
