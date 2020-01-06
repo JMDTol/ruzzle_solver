@@ -33,13 +33,16 @@ PREFIXES = None
 
 
 class RuzzleSolver:
-    def __init__(self, board, word_mults, board_size):
+    def __init__(self, board, word_mults, board_size=None):
+        if board_size is None:
+            board_size = len(board)
+
         self.board = board
         self.word_mults = word_mults
         self.board_size = board_size
-        self.word_int_mults = self.word_mults_to_int_array(self.word_mults)
-        self.points = self.get_points(self.board, self.word_mults)
-        self.graph = self.gen_graph(board_size)
+        self.word_int_mults = self.word_mults_to_int_array()
+        self.points = self.get_points()
+        self.graph = self.gen_graph()
         self.possible_words = []
         self.words_info = {}
 
@@ -51,7 +54,7 @@ class RuzzleSolver:
             PREFIXES = get_prefixes()
 
     @classmethod
-    def open(cls, file_path = MAIN_DIR / "board.txt", board_size=None):
+    def open(cls, file_path=MAIN_DIR / "board.txt", board_size=None):
         """ Read board from board.txt. If board_size is not set, will automatically infer the size based on the first
         line of text. Expects an empty line between the board letters and the board multiplier information."""
 
@@ -65,6 +68,11 @@ class RuzzleSolver:
             word_mults = [row.split() for row in lines[board_size + 1: 2 * board_size + 1]]
 
             return cls(board, word_mults, board_size)
+
+    @classmethod
+    def solve_file(cls, file_path=MAIN_DIR / "board.txt", board_size=None):
+        board = cls.open(file_path, board_size)
+        return board.all_combos()
 
     def dfs(self, visited, s, word, word_pts, word_mult, path):
         """Start at point s and search for words, keeping track of the word, points, and multiplier"""
@@ -134,7 +142,8 @@ class RuzzleSolver:
         return self.words_info
 
     def write_words_to_file(self, print_info=False):
-        """ Writes all words and initial positions to words.txt """
+        """ Writes all words and initial positions to words.txt. If the board has not yet been solved, will first solve
+        it. """
         if not self.words_info:
             self.all_combos()
             self.check_words()
@@ -149,14 +158,14 @@ class RuzzleSolver:
                 print('Number of words:', len(high_scores))
                 print('Total score:', sum(info[0] for word, info in high_scores))
 
-    def get_points(self, board, word_mults):
+    def get_points(self):
         """ Gets the points for each letter, including multipliers"""
         points = []
         for i in range(4):  # row
             row_pts = []
             for j in range(4):  # column
-                pts = self.get_letter_pts(board[i][j])
-                mult = word_mults[i][j]
+                pts = self.get_letter_pts(self.board[i][j])
+                mult = self.word_mults[i][j]
                 if mult == 'D':
                     pts *= 2
                 elif mult == 'T':
@@ -168,43 +177,43 @@ class RuzzleSolver:
     @staticmethod
     def get_letter_pts(l):
         """ Return point value for each letter (no bonuses)"""
-        letter_points = {'A': 1, 'B': 4, 'C': 4, 'D': 2, 'E': 1, 'F': 4, 'G': 3, 'H': 4, 'I': 1, 'J': 10, 'K': 5, 'L': 1,
-                         'M': 3, 'N': 1, 'O': 1, 'P': 4, 'Q': 10, 'R': 1, 'S': 1, 'T': 1, 'U': 2, 'V': 4, 'W': 4, 'X': 8,
+        letter_points = {'A': 1, 'B': 4, 'C': 4, 'D': 2, 'E': 1, 'F': 4, 'G': 3, 'H': 4, 'I': 1, 'J': 10, 'K': 5,
+                         'L': 1,
+                         'M': 3, 'N': 1, 'O': 1, 'P': 4, 'Q': 10, 'R': 1, 'S': 1, 'T': 1, 'U': 2, 'V': 4, 'W': 4,
+                         'X': 8,
                          'Y': 4, 'Z': 8}
         return letter_points[l]
 
-    @staticmethod
-    def word_mults_to_int_array(word_mults):
+    def word_mults_to_int_array(self):
         """ Converts word_mults to an array of integers representing the word score multipliers. """
-        int_word_mults = [[1] * BOARD_SIZE for _ in range(BOARD_SIZE)]
-        for i in range(BOARD_SIZE):
-            for j in range(BOARD_SIZE):
-                int_word_mults[i][j] = int(word_mults[i][j]) if word_mults[i][j] in '23' else 1
+        int_word_mults = [[1] * self.board_size for _ in range(self.board_size)]
+        for i in range(self.board_size):
+            for j in range(self.board_size):
+                int_word_mults[i][j] = int(self.word_mults[i][j]) if self.word_mults[i][j].isdigit() else 1
         return int_word_mults
 
-    @staticmethod
-    def gen_graph(board_size=BOARD_SIZE):
+    def gen_graph(self):
         """stores grid positions into adjacency list"""
         directions = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
         graph = defaultdict(list)
         # for each point (key), store the adjacent points (values) in graph
-        for x in range(board_size):
-            for y in range(board_size):
+        for x in range(self.board_size):
+            for y in range(self.board_size):
                 for cx, cy in directions:
-                    if 0 <= x + cx < board_size and 0 <= y + cy < board_size:
+                    if 0 <= x + cx < self.board_size and 0 <= y + cy < self.board_size:
                         graph[(x, y)].append((x + cx, y + cy))
 
         return graph
 
 
 def get_dict():
-    """returns set of words in dictionary (checking to see if a word is in a set is faster than a list)"""
+    """ Returns set of words in dictionary (checking to see if a word is in a set is faster than a list) """
     dict_file = MAIN_DIR / 'TWL06Trimmed.txt'
     return set(open(dict_file).read().splitlines())
 
 
 def get_prefixes():
-    """ Returns a list of lists of prefixes of a certain number of letters"""
+    """ Returns a list of lists of prefixes of a certain number of letters """
     prefixes = []
     for i in range(PREFIX_LOWER_BOUND, PREFIX_UPPER_BOUND + 1):
         with open(MAIN_DIR / f'prefixes{i}L.txt') as file:
