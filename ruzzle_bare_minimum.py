@@ -3,13 +3,13 @@ A bare minimum ruzzle solver that takes a board as input and finds all words.
 
 This program requires a file called board.txt in the same directory as the program, and board.txt will
 contain the letters in the board and information about multipliers (optional). It will write all words
-sorted by score into a file called words.txt. The 5 prefix files (prefixes2L.txt -> prefixes6L.txt)
-are required, as well as the dictionary (TWL06.txt). At the bottom of this file, set main_dir to the path to the
-directory with all the files. Type the board into board.txt, copying the format of the attached example board.
-The first 4 lines of board.txt should contain the letters of the board, all caps and separated by spaces.
-Line 5 is blank, and lines 6-9 contain information about multipliers. 2, 3, D, T, and - are DW, TW, DL, TL, and nothing
-respectively. If you don't want to input multipliers just set all 16 characters to - (scores and word order won't be
-accurate). There are additional configuration options towards the bottom of the file with explanations.
+sorted by score into a file called words.txt. The 7 prefix files (prefixes2L.txt -> prefixes8L.txt)
+are required, as well as the dictionary (TWL06Trimmed.txt). Type the board into board.txt, copying the 
+format of the attached example board. The first 4 lines of board.txt should contain the letters of the board,
+all caps and separated by spaces. Line 5 is blank, and lines 6-9 contain information about multipliers. 
+2, 3, D, T, and - are DW, TW, DL, TL, and nothing, respectively. If you don't want to input multipliers 
+just set all 16 characters to - (scores and word order won't be accurate). There are additional configuration 
+options such as changing the main directory, board file name, and whether or not to print extra information.
 
 Author: David Chen
 """
