@@ -79,32 +79,36 @@ class RuzzleSolver:
         len_word = len(word)
 
         # store all >2 letter possible words in words_info if they are actual words
-        if len_word >= PREFIX_LOWER_BOUND:
-            # ex) if a word begins with TTH, this doesn't exist so we can stop adding letters
-            if len_word <= PREFIX_UPPER_BOUND and word not in PREFIXES[len_word - PREFIX_LOWER_BOUND]:
-                return
-
-            if word in DICTIONARY:
-                score = word_pts * word_mult
-                bonus = 0 if len_word < 4 else 5 * (len_word - 4)  # length bonus
-                self.possible_words.append((word, score + bonus, path[:]))  # append copy of path
-
-            # there are no words greater than 12 letters (based on ruzzle database), so stop searching
-            if len_word == MAX_WORD_LEN:
-                return
+        if len_word >= PREFIX_LOWER_BOUND and word in DICTIONARY:
+            score = word_pts * word_mult
+            bonus = 0 if len_word < 4 else 5 * (len_word - 4)  # length bonus
+            self.possible_words.append((word, score + bonus, path[:]))  # append copy of path
 
         visited[s] = True  # begin DFS, make sure no overlaps
         path.append(None)
 
+        len_word += 1
         for v in self.graph[s]:  # graph[s] contains the adjacent points
-
             if not visited[v]:
                 x, y = v
+
                 path[-1] = v  # add position to path list
+                temp_word = word + self.board[x][y]
+
+                if len_word >= PREFIX_LOWER_BOUND:
+                    if len_word <= PREFIX_UPPER_BOUND and temp_word not in PREFIXES[len_word - PREFIX_LOWER_BOUND]:
+                        continue
+                    # there are no words greater than 12 letters (based on ruzzle database), so stop searching
+                    if len_word == 12 and temp_word in DICTIONARY:
+                        score = word_pts * word_mult
+                        bonus = 0 if len_word < 4 else 5 * (len_word - 4)  # length bonus
+                        self.possible_words.append((word, score + bonus, path))  # append copy of path
+                        continue
+
                 visited[v] = True
 
                 # search from this new point
-                self.dfs(visited, v, word + self.board[x][y], word_pts + self.points[x][y],
+                self.dfs(visited, v, temp_word, word_pts + self.points[x][y],
                          word_mult * self.word_int_mults[x][y], path)
 
                 # reset everything to continue to search in other directions
